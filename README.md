@@ -26,3 +26,17 @@ COURSES AND ROOMS
     }
 
     Another dictionaries consits of 52 states and their capitals; 
+
+## Web front-end (localhost)
+
+A static page for the program lives in `web/` (plain HTML/CSS/JS, no build step). It implements "Course Encryption App v2" and `design.md` from the Claude Design project (also exported in `Course encryption web wireframe.zip`).
+
+```
+python serve.py          # opens http://localhost:5000/
+python serve.py 8080     # use another port
+```
+
+Screens: **Home**, **Encrypt / Decrypt** (load a `.txt`, use `original.txt`, save/copy the result, code table), **Course info**, **Capital quiz**.
+The server also serves the repo's `original.txt` and `encrypted.txt`, so "Use original.txt" reads the real file. Opening `web/index.html` directly works too; it then falls back to a built-in copy of `original.txt`.
+
+Characters highlighted in amber can't be reversed exactly: `k` has no code (it is dropped), and several letters encode to digits (`a→9`, `c→0`, `R→1`, …), so a digit in cipher text may be a real digit or an encoded letter.

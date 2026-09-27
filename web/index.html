@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Course Encryption Program</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@700&family=Kalam:wght@400;700&family=Patrick+Hand&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Boot: Swordsman -->
+  <div id="boot" class="boot" role="status" aria-live="polite">
+    <div class="stars" id="stars" aria-hidden="true"></div>
+    <div class="boot-sprite" id="boot-sprite"></div>
+    <div class="boot-title"><span>Booting</span><span class="logo">CEP</span></div>
+    <div class="bar" aria-hidden="true"><div class="bar-fill" id="boot-bar"></div></div>
+    <div class="boot-msg" id="boot-msg">Loading courses…</div>
+    <button class="boot-skip" id="boot-skip">Skip</button>
+  </div>
+
+  <div class="app" id="app" hidden>
+    <nav class="side" aria-label="Main">
+      <div class="logo side-logo">CEP</div>
+      <a href="#/" data-route="/">Home</a>
+      <a href="#/cipher" data-route="/cipher">Encrypt / Decrypt</a>
+      <a href="#/course" data-route="/course">Course info</a>
+      <a href="#/quiz" data-route="/quiz">Capital quiz</a>
+      <div class="side-spacer"></div>
+      <div class="side-foot" id="loc">localhost:5000/</div>
+    </nav>
+
+    <main class="main" id="main">
+      <!-- HOME -->
+      <section class="screen" data-screen="/">
+        <header class="banner">
+          <div class="banner-strip">
+            <h1>Course Encryption Program</h1>
+            <span>CS1110 Lab 09 · Victor R Tabuni</span>
+          </div>
+        </header>
+        <div class="home-grid">
+          <a href="#/cipher" class="hero">
+            <span class="home-status" id="home-status">● ready · original.txt loaded</span>
+            <span class="hero-title">Encrypt / Decrypt</span>
+            <span class="hero-sub">Run text through the code table.</span>
+            <span class="hero-sample">alpha12321 → <span>9:?=912321</span></span>
+            <span class="hero-cta">Open workspace</span>
+          </a>
+          <a href="#/course" class="card"><span class="card-title">Course info</span><span class="card-sub">5 courses</span></a>
+          <a href="#/quiz" class="card"><span class="card-title">Capital quiz</span><span class="card-sub" id="quiz-card-sub">50 states</span></a>
+        </div>
+      </section>
+
+      <!-- ENCRYPT / DECRYPT -->
+      <section class="screen cipher" data-screen="/cipher" hidden>
+        <div class="work">
+          <div class="page-head">
+            <h1>Encrypt / Decrypt</h1>
+            <button class="chip" id="table-toggle" aria-expanded="false" aria-controls="table-aside">Code table ◂</button>
+          </div>
+          <div class="tabs" role="tablist">
+            <button role="tab" class="tab" data-mode="encrypt" aria-selected="true">Encrypt</button>
+            <button role="tab" class="tab" data-mode="decrypt" aria-selected="false">Decrypt</button>
+          </div>
+
+          <div class="box error row-between" id="file-error" hidden>
+            <span><span class="t-error" id="file-error-name"></span> Choose a .txt file.</span>
+            <button class="x-btn" id="file-error-close" aria-label="Dismiss">✕</button>
+          </div>
+
+          <label class="label" for="cipher-in" id="in-label">Plain text</label>
+          <div class="empty" id="in-empty" hidden>
+            <span id="empty-msg">Nothing to encrypt yet.</span><br>
+            <button class="link ok-link" data-pick-file>Load a .txt file</button> or paste text below.
+          </div>
+          <textarea id="cipher-in" spellcheck="false" placeholder="Paste text here"></textarea>
+          <div class="actions">
+            <button class="btn btn-lg" id="run">Encrypt ↓</button>
+            <button class="link" data-pick-file>Load .txt</button>
+            <button class="link muted-link" id="use-orig">Use original.txt</button>
+            <button class="link muted-link danger-hover" id="clear">Clear</button>
+            <input type="file" id="file-in" accept=".txt,text/plain" hidden>
+          </div>
+
+          <div class="box warn" id="warn" hidden>
+            <span><span class="t-warn" id="warn-title"></span> <span id="warn-body"></span></span>
+            <div class="actions" id="warn-actions" hidden>
+              <button class="link" id="toggle-hl">Hide highlights</button>
+              <button class="link" id="toggle-keep">Keep digits as digits</button>
+            </div>
+          </div>
+
+          <label class="label" id="out-label">Encrypted result</label>
+          <div class="output" id="cipher-out" aria-live="polite" aria-labelledby="out-label"><span class="output-empty">Result appears here.</span></div>
+          <div class="actions" id="out-actions" hidden>
+            <button class="btn-outline" id="save">Save encrypted.txt</button>
+            <button class="link" id="copy">Copy</button>
+            <button class="link" id="to-decrypt">Decrypt this →</button>
+          </div>
+        </div>
+
+        <aside class="table-aside" id="table-aside" hidden>
+          <div class="row-between"><span class="aside-title">Code table</span><button class="x-btn" id="table-close" aria-label="Close code table">✕</button></div>
+          <input id="table-q" placeholder="find a character…" aria-label="Find a character">
+          <div class="table-grid" id="table-grid"></div>
+          <div class="aside-note"><span class="t-warn">Amber</span> = can't be reversed exactly.</div>
+        </aside>
+      </section>
+
+      <!-- COURSE INFO -->
+      <section class="screen" data-screen="/course" hidden>
+        <div class="page">
+          <h1>Course info</h1>
+          <label class="label" for="course-in">Enter a course number</label>
+          <div class="input-row">
+            <input id="course-in" class="field" placeholder="e.g. CS101" autocomplete="off">
+            <button class="btn" id="lookup">Look up</button>
+          </div>
+          <div class="chips"><span class="chips-label">Pick:</span><span id="course-chips" class="chips"></span></div>
+          <div class="busy-inline" id="course-busy" hidden></div>
+          <div class="result" id="course-result" hidden></div>
+          <div class="box error" id="course-miss" hidden></div>
+        </div>
+      </section>
+
+      <!-- CAPITAL QUIZ -->
+      <section class="screen" data-screen="/quiz" hidden>
+        <div class="page quiz">
+          <div class="row-between wrap">
+            <h1>Capital quiz</h1>
+            <div class="score" id="score"></div>
+          </div>
+          <div id="quiz-active" class="stack">
+            <div class="question">What is the capital of <span class="q-state" id="q-state"></span>?</div>
+            <div class="input-row">
+              <input id="quiz-in" class="field" placeholder="Type the capital" autocomplete="off" aria-label="Capital">
+              <button class="btn" id="check">Check</button>
+            </div>
+            <div class="busy-inline" id="quiz-busy" hidden></div>
+            <div class="box feedback" id="feedback" aria-live="polite" hidden></div>
+            <div class="actions">
+              <button class="btn-outline" id="next-state">Next state</button>
+              <button class="link-plain" id="stop-quiz">Stop quiz</button>
+            </div>
+          </div>
+          <div class="result stack-start" id="quiz-ended" hidden>
+            <div class="ended-title">Thanks for playing!</div>
+            <div class="ended-score" id="final-score"></div>
+            <button class="btn" id="play-again">Play again</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Long-task overlay: Infantryman -->
+      <div class="busy-overlay" id="busy-overlay" hidden>
+        <div id="busy-sprite"></div>
+        <div class="busy-label" id="busy-label">Encrypting…</div>
+      </div>
+    </main>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
